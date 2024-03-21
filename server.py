@@ -46,6 +46,12 @@ def main():
 
 def handle_dialog(res, req):
     user_id = req['session']['user_id']
+    res['response']['buttons'] = {
+                    'title': 'Помощь',
+                    'hide': True
+                }
+    if req['request']['command'] == 'Помощь':
+        res['response']['text'] = 'Выберите город и Алиса выведет картинку'
 
     # если пользователь новый, то просим его представиться.
     if req['session']['new']:
