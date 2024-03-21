@@ -46,12 +46,6 @@ def main():
 
 def handle_dialog(res, req):
     user_id = req['session']['user_id']
-    res['response']['buttons'] = {
-                    'title': 'Помощь',
-                    'hide': True
-                }
-    if req['request']['command'] == 'Помощь':
-        res['response']['text'] = 'Выберите город и Алиса выведет картинку'
 
     # если пользователь новый, то просим его представиться.
     if req['session']['new']:
@@ -87,9 +81,25 @@ def handle_dialog(res, req):
                     'hide': True
                 } for city in cities
             ]
+            res['response']['buttons'].append({
+                    'title': 'Помощь',
+                    'hide': True
+                })
     # если мы знакомы с пользователем и он нам что-то написал,
     # то это говорит о том, что он уже говорит о городе,
     # что хочет увидеть.
+    elif req['request']['command'] == 'Помощь'.lower():
+        res['response']['text'] = 'Выберите город и Алиса выведет картинку'
+        res['response']['buttons'] = [
+                {
+                    'title': city.title(),
+                    'hide': True
+                } for city in cities
+            ]
+        res['response']['buttons'].append({
+                    'title': 'Помощь',
+                    'hide': True
+                })
     else:
         # ищем город в сообщение от пользователя
         city = get_city(req)
@@ -106,6 +116,16 @@ def handle_dialog(res, req):
         else:
             res['response']['text'] = \
                 'Первый раз слышу об этом городе. Попробуй еще разок!'
+            res['response']['buttons'] = [
+                {
+                    'title': city.title(),
+                    'hide': True
+                } for city in cities
+            ]
+            res['response']['buttons'].append({
+                    'title': 'Помощь',
+                    'hide': True
+                })
 
 
 def get_city(req):
